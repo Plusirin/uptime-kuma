@@ -148,7 +148,7 @@ class Monitor extends BeanModel {
             }
 
             try {
-                if (this.type === "http" || this.type === "keyword") {
+                if (this.type === "http" || this.type === "keyword" || this.type === "ssl" ) {
                     // Do not do any queries/high loading things before the "bean.ping"
                     let startTime = dayjs().valueOf();
 
@@ -216,7 +216,7 @@ class Monitor extends BeanModel {
                         console.log(res.data);
                     }
 
-                    if (this.type === "http") {
+                    if (this.type === "http" || this.type === "ssl") {
                         bean.status = UP;
                     } else {
 
