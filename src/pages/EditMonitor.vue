@@ -32,6 +32,9 @@
                                     <option value="steam">
                                         Steam Game Server
                                     </option>
+                                    <option value="ssl">
+                                        SSL Cert
+                                    </option>
                                 </select>
                             </div>
 
@@ -80,6 +83,13 @@
                                 <input id="port" v-model="monitor.port" type="number" class="form-control" required min="0" max="65535" step="1">
                             </div>
 
+                            <!-- SSL Cert -->
+                            <!-- For SSL Cert Type -->
+                            <div v-if="monitor.type === 'ssl'" class="my-3">
+                                <label for="domain" class="form-label">{{ $t("SSL") }}</label>
+                                <input id="domain" v-model="monitor.url" type="text" class="form-control" required>
+                            </div>
+                            
                             <!-- DNS Resolver Server -->
                             <!-- For DNS Type -->
                             <template v-if="monitor.type === 'dns'">
@@ -157,7 +167,7 @@
                             </div>
 
                             <!-- HTTP / Keyword only -->
-                            <template v-if="monitor.type === 'http' || monitor.type === 'keyword' ">
+                            <template v-if="monitor.type === 'http' || monitor.type === 'keyword' || monitor.type === 'ssl'">
                                 <div class="my-3">
                                     <label for="maxRedirects" class="form-label">{{ $t("Max. Redirects") }}</label>
                                     <input id="maxRedirects" v-model="monitor.maxredirects" type="number" class="form-control" required min="0" step="1">
