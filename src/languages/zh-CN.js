@@ -55,6 +55,7 @@ export default {
     "Monitor Type": "监控类型",
     Keyword: "关键字",
     "Friendly Name": "自定义名称",
+    SSL: "证书域名",
     URL: "网址URL",
     Hostname: "主机名",
     Port: "端口号",
