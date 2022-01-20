@@ -94,7 +94,6 @@ export default {
         }
     },
     created() {
-
     },
     methods: {
         removeGroup(index) {

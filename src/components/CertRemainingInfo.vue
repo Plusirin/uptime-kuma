@@ -1,7 +1,8 @@
 <template>
     <span class="num">
 <!--        <a>111 {{ $t("days") }} </a>-->
-        <a >{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }} </a>
+        <a v-if="tlsInfo.certInfo">{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }} </a>
+        <a v-else> -- </a>
     </span>
 </template>
 
@@ -13,21 +14,19 @@ export default {
             required: true,
         },
     },
-
     computed: {
-
         tlsInfo() {
             // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
             // Fix: TypeError: Cannot read properties of undefined (reading 'validTo')
             // Reason: TLS Info object format is changed in 1.8.0, if for some reason, it cannot connect to the site after update to 1.8.0, the object is still in the old format.
             // eslint-disable-next-line no-debugger
-            
-            if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
-                console.log(this.$root.tlsInfoList[this.monitorId])
-                return this.$root.tlsInfoList[this.monitorId];
-            }
-            
-            return null
+
+            // if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
+            //     console.log(this.$root.tlsInfoList[this.monitorId])
+            //     return this.$root.tlsInfoList[this.monitorId];
+            // }
+            // return null
+            return this.$root.tlsInfoList[this.monitorId] ? this.$root.tlsInfoList[this.monitorId] : "--";
         },
         // tlsInfo() {
         //     // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
@@ -45,18 +44,18 @@ export default {
 
         color() {
             if (this.lastHeartBeat.status === 0) {
-                return "danger"
+                return "danger";
             }
 
             if (this.lastHeartBeat.status === 1) {
-                return "primary"
+                return "primary";
             }
 
             if (this.lastHeartBeat.status === 2) {
-                return "warning"
+                return "warning";
             }
 
-            return "secondary"
+            return "secondary";
         },
 
         className() {
@@ -67,7 +66,7 @@ export default {
             return "";
         },
     },
-}
+};
 </script>
 
 

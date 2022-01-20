@@ -6,8 +6,24 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 const axios = require("axios");
 const { Prometheus } = require("../prometheus");
-const { debug, UP, DOWN, PENDING, flipStatus, TimeLogger } = require("../../src/util");
-const { tcping, ping, dnsResolve, checkCertificate, checkStatusCode, getTotalClientInRoom, setting, errorLog } = require("../util-server");
+const {
+    debug,
+    UP,
+    DOWN,
+    PENDING,
+    flipStatus,
+    TimeLogger,
+} = require("../../src/util");
+const {
+    tcping,
+    ping,
+    dnsResolve,
+    checkCertificate,
+    checkStatusCode,
+    getTotalClientInRoom,
+    setting,
+    errorLog,
+} = require("../util-server");
 const { R } = require("redbean-node");
 const { BeanModel } = require("redbean-node/dist/bean-model");
 const { Notification } = require("../notification");
@@ -124,7 +140,7 @@ class Monitor extends BeanModel {
             // undefined if not https
             let tlsInfo = undefined;
 
-            if (! previousBeat) {
+            if (!previousBeat) {
                 previousBeat = await R.findOne("heartbeat", " monitor_id = ? ORDER BY time DESC", [
                     this.id,
                 ]);
@@ -142,14 +158,14 @@ class Monitor extends BeanModel {
             }
 
             // Duration
-            if (! isFirstBeat) {
+            if (!isFirstBeat) {
                 bean.duration = dayjs(bean.time).diff(dayjs(previousBeat.time), "second");
             } else {
                 bean.duration = 0;
             }
 
             try {
-                if (this.type === "http" || this.type === "keyword" || this.type === "ssl" ) {
+                if (this.type === "http" || this.type === "keyword" || this.type === "ssl") {
                     // Do not do any queries/high loading things before the "bean.ping"
                     let startTime = dayjs().valueOf();
 
@@ -176,7 +192,7 @@ class Monitor extends BeanModel {
                         },
                         httpsAgent: new https.Agent({
                             maxCachedSessions: 0,      // Use Custom agent to disable session reuse (https://github.com/nodejs/node/issues/3940)
-                            rejectUnauthorized: ! this.getIgnoreTls(),
+                            rejectUnauthorized: !this.getIgnoreTls(),
                         }),
                         maxRedirects: this.maxredirects,
                         validateStatus: (status) => {
@@ -280,7 +296,7 @@ class Monitor extends BeanModel {
                     if (this.dnsLastResult !== dnsMessage) {
                         R.exec("UPDATE `monitor` SET dns_last_result = ? WHERE id = ? ", [
                             dnsMessage,
-                            this.id
+                            this.id,
                         ]);
                     }
 
@@ -291,7 +307,7 @@ class Monitor extends BeanModel {
 
                     let heartbeatCount = await R.count("heartbeat", " monitor_id = ? AND time > ? ", [
                         this.id,
-                        time
+                        time,
                     ]);
 
                     debug("heartbeatCount" + heartbeatCount + " " + time);
@@ -325,7 +341,7 @@ class Monitor extends BeanModel {
                         },
                         httpsAgent: new https.Agent({
                             maxCachedSessions: 0,      // Use Custom agent to disable session reuse (https://github.com/nodejs/node/issues/3940)
-                            rejectUnauthorized: ! this.getIgnoreTls(),
+                            rejectUnauthorized: !this.getIgnoreTls(),
                         }),
                         maxRedirects: this.maxredirects,
                         validateStatus: (status) => {
@@ -334,7 +350,7 @@ class Monitor extends BeanModel {
                         params: {
                             filter: filter,
                             key: steamAPIKey,
-                        }
+                        },
                     });
 
                     if (res.data.response && res.data.response.servers && res.data.response.servers.length > 0) {
@@ -343,7 +359,8 @@ class Monitor extends BeanModel {
 
                         try {
                             bean.ping = await ping(this.hostname);
-                        } catch (_) { }
+                        } catch (_) {
+                        }
                     } else {
                         throw new Error("Server not found on Steam");
                     }
@@ -422,7 +439,7 @@ class Monitor extends BeanModel {
 
             previousBeat = bean;
 
-            if (! this.isStop) {
+            if (!this.isStop) {
 
                 if (demoMode) {
                     if (beatInterval < 20) {
@@ -447,7 +464,7 @@ class Monitor extends BeanModel {
                 errorLog(e, false);
                 console.error("Please report to https://github.com/louislam/uptime-kuma/issues");
 
-                if (! this.isStop) {
+                if (!this.isStop) {
                     console.log("Try to restart the monitor");
                     this.heartbeatInterval = setTimeout(safeBeat, this.interval * 1000);
                 }
@@ -508,7 +525,7 @@ class Monitor extends BeanModel {
                     if (oldCertInfo.certInfo.fingerprint256 !== checkCertificateResult.certInfo.fingerprint256) {
                         debug("Resetting sent_history");
                         await R.exec("DELETE FROM notification_sent_history WHERE type = 'certificate' AND monitor_id = ?", [
-                            this.id
+                            this.id,
                         ]);
                     } else {
                         debug("No need to reset sent_history");
@@ -518,7 +535,8 @@ class Monitor extends BeanModel {
                 } else {
                     debug("Not valid object");
                 }
-            } catch (e) { }
+            } catch (e) {
+            }
 
         }
 
@@ -568,6 +586,7 @@ class Monitor extends BeanModel {
             monitorID,
         ]);
         if (tls_info != null) {
+            console.log("-------------emit certInfo-------------");
             io.to(userID).emit("certInfo", monitorID, tls_info.info_json);
         }
     }
@@ -630,7 +649,7 @@ class Monitor extends BeanModel {
 
         } else {
             // Handle new monitor with only one beat, because the beat's duration = 0
-            let status = parseInt(await R.getCell("SELECT `status` FROM heartbeat WHERE monitor_id = ?", [ monitorID ]));
+            let status = parseInt(await R.getCell("SELECT `status` FROM heartbeat WHERE monitor_id = ?", [monitorID]));
 
             if (status === UP) {
                 uptime = 1;
@@ -761,7 +780,7 @@ class Monitor extends BeanModel {
             SELECT status, time FROM heartbeat
             WHERE id = (select MAX(id) from heartbeat where monitor_id = ?)
         `, [
-            monitorID
+            monitorID,
         ]);
     }
 }

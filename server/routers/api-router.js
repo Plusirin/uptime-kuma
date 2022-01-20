@@ -1,11 +1,19 @@
 let express = require("express");
-const { allowDevAllOrigin, getSettings, setting } = require("../util-server");
+const {
+    allowDevAllOrigin,
+    getSettings,
+    setting,
+} = require("../util-server");
 const { R } = require("redbean-node");
 const server = require("../server");
 const apicache = require("../modules/apicache");
 const Monitor = require("../model/monitor");
 const dayjs = require("dayjs");
-const { UP, flipStatus, debug } = require("../../src/util");
+const {
+    UP,
+    flipStatus,
+    debug,
+} = require("../../src/util");
 let router = express.Router();
 
 let cache = apicache.middleware;
@@ -24,10 +32,10 @@ router.get("/api/push/:pushToken", async (request, response) => {
         let ping = request.query.ping || null;
 
         let monitor = await R.findOne("monitor", " push_token = ? AND active = 1 ", [
-            pushToken
+            pushToken,
         ]);
 
-        if (! monitor) {
+        if (!monitor) {
             throw new Error("Monitor not found or not active.");
         }
 
@@ -77,7 +85,7 @@ router.get("/api/push/:pushToken", async (request, response) => {
     } catch (e) {
         response.json({
             ok: false,
-            msg: e.message
+            msg: e.message,
         });
     }
 });
@@ -88,19 +96,19 @@ router.get("/api/status-page/config", async (_request, response) => {
 
     let config = await getSettings("statusPage");
 
-    if (! config.statusPageTheme) {
+    if (!config.statusPageTheme) {
         config.statusPageTheme = "light";
     }
 
-    if (! config.statusPagePublished) {
+    if (!config.statusPagePublished) {
         config.statusPagePublished = true;
     }
 
-    if (! config.statusPageTags) {
+    if (!config.statusPageTags) {
         config.statusPageTags = false;
     }
 
-    if (! config.title) {
+    if (!config.title) {
         config.title = "Uptime Kuma";
     }
 
@@ -147,15 +155,15 @@ router.get("/api/status-page/monitor-list", cache("5 minutes"), async (_request,
                 monitorGroup.monitorList = await Promise.all(monitorGroup.monitorList.map(async (monitor) => {
                     // Includes tags as an array in response, allows for tags to be displayed on public status page
                     const tags = await R.getAll(
-                            `SELECT monitor_tag.monitor_id, monitor_tag.value, tag.name, tag.color
+                        `SELECT monitor_tag.monitor_id, monitor_tag.value, tag.name, tag.color
                             FROM monitor_tag
                             JOIN tag
                             ON monitor_tag.tag_id = tag.id
-                            WHERE monitor_tag.monitor_id = ?`, [monitor.id]
+                            WHERE monitor_tag.monitor_id = ?`, [monitor.id],
                     );
                     return {
                         ...monitor,
-                        tags: tags
+                        tags: tags,
                     };
                 }));
             }
@@ -206,7 +214,7 @@ router.get("/api/status-page/heartbeat", cache("5 minutes"), async (_request, re
 
         response.json({
             heartbeatList,
-            uptimeList
+            uptimeList,
         });
 
     } catch (error) {
@@ -215,7 +223,7 @@ router.get("/api/status-page/heartbeat", cache("5 minutes"), async (_request, re
 });
 
 async function checkPublished() {
-    if (! await isPublished()) {
+    if (!await isPublished()) {
         throw new Error("The status page is not published");
     }
 }
