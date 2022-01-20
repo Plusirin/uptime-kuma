@@ -45,7 +45,11 @@
                                             <Tag v-for="tag in monitor.element.tags" :key="tag" :item="tag" :size="'sm'" />
                                         </div>
                                     </div>
-                                    <div :key="$root.userHeartbeatBar" class="col-3 col-md-4">
+                                    <div  v-if="monitor.element.type === 'ssl'" class="col-3 col-md-4">
+                                        <CertRemainingInfo size="small" :monitor-id="monitor.element.id" />
+                                    </div>
+                                    
+                                    <div  v-else :key="$root.userHeartbeatBar" class="col-3 col-md-4">
                                         <HeartbeatBar size="small" :monitor-id="monitor.element.id" />
                                     </div>
                                 </div>
@@ -61,6 +65,7 @@
 <script>
 import Draggable from "vuedraggable";
 import HeartbeatBar from "./HeartbeatBar.vue";
+import CertRemainingInfo from "./CertRemainingInfo.vue";
 import Uptime from "./Uptime.vue";
 import Tag from "./Tag.vue";
 
@@ -70,6 +75,7 @@ export default {
         HeartbeatBar,
         Uptime,
         Tag,
+        CertRemainingInfo,
     },
     props: {
         editMode: {
