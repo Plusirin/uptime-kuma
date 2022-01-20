@@ -1,7 +1,7 @@
 <template>
     <span class="num">
 <!--        <a>111 {{ $t("days") }} </a>-->
-        <a v-if="tlsInfo.certInfo">{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }} </a>
+        <a >{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }} </a>
     </span>
 </template>
 
@@ -20,11 +20,14 @@ export default {
             // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
             // Fix: TypeError: Cannot read properties of undefined (reading 'validTo')
             // Reason: TLS Info object format is changed in 1.8.0, if for some reason, it cannot connect to the site after update to 1.8.0, the object is still in the old format.
-            // if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
-            //     return this.$root.tlsInfoList[this.monitorId];
-            // }
-
-            return this.$root.tlsInfoList[this.monitorId];
+            // eslint-disable-next-line no-debugger
+            
+            if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
+                console.log(this.$root.tlsInfoList[this.monitorId])
+                return this.$root.tlsInfoList[this.monitorId];
+            }
+            
+            return null
         },
         // tlsInfo() {
         //     // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
