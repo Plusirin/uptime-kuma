@@ -28,8 +28,12 @@
                             <Tag v-for="tag in item.tags" :key="tag" :item="tag" :size="'sm'" />
                         </div>
                     </div>
-                    <div v-show="$root.userHeartbeatBar == 'normal'" :key="$root.userHeartbeatBar" class="col-3 col-md-4">
+                    <div v-if="item.type !== 'ssl'" v-show="$root.userHeartbeatBar == 'normal'" :key="$root.userHeartbeatBar" class="col-3 col-md-4">
                         <HeartbeatBar size="small" :monitor-id="item.id" />
+                    </div>
+
+                    <div v-else v-show="$root.userHeartbeatBar == 'normal'" :key="$root.userHeartbeatBar" class="col-3 col-md-4">
+                        <CertRemainingInfo size="small" :monitor-id="item.id" />
                     </div>
                 </div>
 
@@ -45,6 +49,7 @@
 
 <script>
 import HeartbeatBar from "../components/HeartbeatBar.vue";
+import CertRemainingInfo from "../components/CertRemainingInfo.vue"
 import Uptime from "../components/Uptime.vue";
 import Tag from "../components/Tag.vue";
 import { getMonitorRelativeURL } from "../util.ts";
@@ -54,6 +59,7 @@ export default {
         Uptime,
         HeartbeatBar,
         Tag,
+        CertRemainingInfo,
     },
     props: {
         scrollbar: {
