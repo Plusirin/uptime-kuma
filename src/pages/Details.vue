@@ -7,8 +7,9 @@
             </div>
             <p class="url">
                 <a v-if="monitor.type === 'http' || monitor.type === 'keyword' " :href="monitor.url" target="_blank">{{ monitor.url }}</a>
-                <span v-if="monitor.type === 'port'">TCP Ping {{ monitor.hostname }}:{{ monitor.port }}</span>
-                <span v-if="monitor.type === 'ping'">Ping: {{ monitor.hostname }}</span>
+                <span v-if="monitor.type === 'ssl'">SSL Cert From : {{ monitor.url }}</span>
+                <span v-if="monitor.type === 'port'">TCP Ping : {{ monitor.hostname }}:{{ monitor.port }}</span>
+                <span v-if="monitor.type === 'ping'">Ping : {{ monitor.hostname }}</span>
                 <span v-if="monitor.type === 'keyword'">
                     <br>
                     <span>{{ $t("Keyword") }}:</span> <span class="keyword">{{ monitor.keyword }}</span>
@@ -34,7 +35,19 @@
                 </button>
             </div>
 
-            <div class="shadow-box">
+            <div v-if="monitor.type !== 'ssl'" class="shadow-box">
+                <div class="row">
+                    <div class="col-md-8">
+                        <HeartbeatBar :monitor-id="monitor.id" />
+                        <span class="word">{{ $t("checkEverySecond", [ monitor.interval ]) }}</span>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span class="badge rounded-pill" :class=" 'bg-' + status.color " style="font-size: 30px;">{{ status.text }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div v-else class="shadow-box">
                 <div class="row">
                     <div class="col-md-8">
                         <h4>{{ $t("Cert Exp.") }}—{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }}</h4>
