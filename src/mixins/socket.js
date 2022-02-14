@@ -6,6 +6,10 @@ const toast = useToast();
 
 let socket;
 
+/**
+ * 不使用SocketIo的页面
+ * @type {string[]}
+ */
 const noSocketIOPages = [
     "/status-page",
     // "/status",
@@ -155,9 +159,10 @@ export default {
                 this.uptimeList[`${monitorID}_${type}`] = data;
             });
 
+            /**
+             * 接收socket发送的消息-对应monitor.js(sendCertInfo函数->emit("certInfo",...))
+             */
             socket.on("certInfo", (monitorID, data) => {
-                console.log("-------------certInfo-------------");
-                console.log(JSON.parse(data));
                 this.tlsInfoList[monitorID] = JSON.parse(data);
             });
 
