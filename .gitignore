@@ -13,4 +13,4 @@ dist-ssr
 /out
 /tmp
 .env
-!/package-lock.json
+/package-lock.json

@@ -2,7 +2,7 @@
     <span class="num">
 <!--        <a>111 {{ $t("days") }} </a>-->
         <a v-if="tlsInfo.certInfo">{{ tlsInfo.certInfo.daysRemaining }} {{ $t("days") }} </a>
-        <a v-else> -- </a>
+        <a v-else> -- {{ $t("days") }}</a>
     </span>
 </template>
 
@@ -16,32 +16,12 @@ export default {
     },
     computed: {
         tlsInfo() {
-            // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
-            // Fix: TypeError: Cannot read properties of undefined (reading 'validTo')
-            // Reason: TLS Info object format is changed in 1.8.0, if for some reason, it cannot connect to the site after update to 1.8.0, the object is still in the old format.
-            // eslint-disable-next-line no-debugger
-
-            // if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
-            //     console.log(this.$root.tlsInfoList[this.monitorId])
-            //     return this.$root.tlsInfoList[this.monitorId];
-            // }
-            // return null
+            /**
+             * 设置返回默认值“--”，返回null可能会出现error信息
+             * error信息会导致页面停止渲染，后执行的程序获取到数据后，数据并不会渲染到页面上
+             */
             return this.$root.tlsInfoList[this.monitorId] ? this.$root.tlsInfoList[this.monitorId] : "--";
         },
-        // tlsInfo() {
-        //     // Add: this.$root.tlsInfoList[this.monitor.id].certInfo
-        //     // Fix: TypeError: Cannot read properties of undefined (reading 'validTo')
-        //     // Reason: TLS Info object format is changed in 1.8.0, if for some reason, it cannot connect to the site after update to 1.8.0, the object is still in the old format.
-        //     if (this.$root.tlsInfoList[this.monitorId] && this.$root.tlsInfoList[this.monitorId].certInfo) {
-        //         return this.$root.tlsInfoList[this.monitorId];
-        //     }
-        //     // console.log("monitorId"+monitorId);
-        //     console.log("this.monitorId"+this.monitorId);
-        //     // console.log(this.$root.tlsInfoList[monitorId]);
-        //     console.log(this.$root.tlsInfoList[this.monitorId]);
-        //     return null;
-        // },
-
         color() {
             if (this.lastHeartBeat.status === 0) {
                 return "danger";
